@@ -15,6 +15,8 @@ import CreatePost from './pages/CreatePost';
 import AuthorPosts from './pages/AuthorPosts';
 import EditPost from './pages/EditPost';
 import Register from './pages/Register';
+import { LoginSignup } from './pages/LoginSignup';
+import IsAuth from './components/IsAuth';
 
 const router = createBrowserRouter([
   {
@@ -26,14 +28,16 @@ const router = createBrowserRouter([
       {path: 'posts/:id', element: <PostDetail />},
       {path: 'register', element: <Register />},
       {path: 'login', element: <Login />},
-      {path: 'profile/:id', element: <UserProfile />},
+      {path: 'me', element: <IsAuth component={UserProfile} />},
       {path: 'authors', element: <Authors />},
-      {path: 'create', element: <CreatePost />},
+      {path: 'create', element: <IsAuth component={CreatePost} />},
       {path: 'posts/users/:id', element: <AuthorPosts />},
-      {path: 'posts/:id/edit', element: <EditPost />},
+      {path: 'posts/:id/edit', element: <IsAuth component={EditPost} />},
+      {path: 'loginSignup', element: <LoginSignup />}
     ],
   }
 ])
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

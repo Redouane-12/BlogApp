@@ -42,6 +42,8 @@ const PostController = {
       const imageUrl = req.file.path;
       const authorId = req.user._id; // Assuming user ID is available in req.user after authentication
 
+      console.log(req.body);
+
       if (!authorId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }

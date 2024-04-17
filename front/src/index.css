@@ -15,7 +15,7 @@
   --color-gray-700: #252542;
   --color-gray-900: #0c0c22;
 
-  --color-bg: hwb(50 50% 8%);
+  --color-bg: hwb(50 93% 0%);
 
   --transition: all 300ms ease;
 
@@ -43,6 +43,9 @@ body {
   font-size: 0.9rem;
   line-height: 1.6;
   color: var(--color-gray-700);
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 10rem;
 }
 
 a {
