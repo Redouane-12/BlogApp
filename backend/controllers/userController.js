@@ -2,7 +2,9 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const multer = require('multer');
+const Post = require('../models/Post');
 const cloudinary = require('cloudinary').v2;
+
 
 // Multer configuration for avatar uploads
 const storage = multer.diskStorage({});
@@ -76,6 +78,43 @@ const UserController = {
     }
   },
 
+  getProfile: async (req, res) => {
+    try {
+      const token = req.headers.authorization.split(' ')[1]; // Extract token from Authorization header
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET); // Verify and decode the token
+
+      if (!decodedToken || !decodedToken.userId) {
+        return res.status(401).json({ error: 'Invalid token' });
+      }
+
+      const userId = decodedToken.userId;
+      const user = await User.findById(userId).select('-password');
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      res.status(200).json({ user });
+    } catch (error) {
+      console.error('Error getting user profile by token:', error);
+      res.status(500).json({ error: 'Error getting user profile by token' });
+    }
+  },
+
+  getUserPosts: async (req, res) => {
+    try {
+      const userId = req.userId; // Assuming userId is stored in JWT payload
+
+      // Fetch user's posts from the Post model
+      const userPosts = await Post.find({ author: userId }).populate("author");
+
+      res.status(200).json({ posts: userPosts });
+    } catch (error) {
+      console.error('Error fetching user posts:', error);
+      res.status(500).json({ error: 'Error fetching user posts' });
+    }
+  },
+  
   updateUserAccount: async (req, res) => {
     try {
       const { name, email, password } = req.body;
@@ -124,65 +163,5 @@ const UserController = {
 
 module.exports = UserController;
 
-
-
-
-
-//------
-
-
-
-// const User = require("../models/User");
-// const jwt = require("jsonwebtoken");
-// const bcrypt = require('bcrypt');
-// const secret_key = "2g0j0w091u9w37";
-
-// function signupPage(req, res) {
-//     res.render("signup");
-// }
-
-// async function signup(req, res) {
-//     const existUser = await User.findOne({name: req.body.name});
-//     if(existUser){
-//         res.send("User already exist.");
-//     }else {
-//         const saltRounds = 10;
-//         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds)
-
-//         req.body.password = hashedPassword;
-
-//         const userData = await User.insertMany(req.body);
-//         console.log(userData);
-//         res.redirect("/login")
-//     }
-// }
-
-// function loginPage(req, res) {
-//     res.render("login");
-// }
-
-// async function login(req, res) {
-//     try{
-//         const check = await User.findOne({name: req.body.name});
-//         if(!check){
-//             return res.send("User cannot found");
-//         }
-
-//         const passwordMatch = await bcrypt.compare(req.body.password, check.password)
-//         if(!passwordMatch){
-//             return res.send("Wrong password")
-//         }
-//         const btkn = jwt.sign({ userId: check._id }, secret_key, {expiresIn: "20000s"});
-//         let token = "Bearer " + btkn;
-//         res.send(token);
-
-//     }catch{
-//         res.send("wrong Details!!!")    
-//     }
-// };
-
-
-
-// module.exports = {signupPage, signup, loginPage, login}
 
 

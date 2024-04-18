@@ -116,7 +116,7 @@ export const LoginSignup = () => {
         Lost Password? <span class="text-yellow-600 cursor-pointer">Click Here!</span>
       </div>
     )}
-    <div class="submit-container flex justify-center mt-8">
+    <div class="submit-container flex space-x-4 justify-center mt-8">
       <button
         type="submit"
         class={`submit flex justify-center items-center w-44 h-14 text-white rounded-full font-bold cursor-pointer ${

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import PostItem from './PostItem';
 
+
 const Posts = () => {
   const [posts, setPosts] = useState([]);
 
@@ -13,17 +14,15 @@ const Posts = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:3003/post');
-      const sortedPosts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      const recentPosts = sortedPosts.slice(0, 3);
-      setPosts(recentPosts);
+      setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
   };
 
   return (
-    
     <div className="container mx-auto px-4 py-8">
+    <h1 className="text-5xl text-center font-bold text-gray-800 mb-4">All Posts</h1><br />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {posts.map(({ _id, title, description, author, imageUrl }) => (
           <Link key={_id} to={`/posts/${_id}`} className="block">

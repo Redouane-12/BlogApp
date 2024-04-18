@@ -38,18 +38,15 @@ const PostController = {
 
   createPost: async (req, res) => {
     try {
-      const { title, content, } = req.body;
-      const imageUrl = req.file.path;
-      const authorId = req.user._id; // Assuming user ID is available in req.user after authentication
-
-      console.log(req.body);
+      const { title, content,image } = req.body;
+      const authorId = req.userId; // Assuming user ID is available in req.user after authentication
 
       if (!authorId) {
         return res.status(401).json({ error: 'User not authenticated' });
       }
 
       // Create the new post with author ID
-      const newPost = new Post({ title, content, imageUrl:imageUrl, author: authorId });
+      const newPost = new Post({ title, content, imageUrl:image, author: authorId });
       await newPost.save();
       
       res.status(201).json({ message: 'Post created successfully', post: newPost });
@@ -63,8 +60,7 @@ const PostController = {
     try {
       const { id } = req.params;
       const { title, content } = req.body;
-      const imageUrl = req.file.path;
-      const userId = req.user._id;
+      const userId = req.userId;
 
       const post = await Post.findById(id);
       if (!post) {
@@ -75,7 +71,7 @@ const PostController = {
         return res.status(403).json({ error: 'Unauthorized to update this post' });
       }
 
-      const updatedPost = await Post.findByIdAndUpdate(id, { title, content ,imageUrl:imageUrl}, { new: true });
+      const updatedPost = await Post.findByIdAndUpdate(id, { title, content }, { new: true });
       res.json({ message: 'Post updated successfully', post: updatedPost });
     } catch (error) {
       console.error('Error updating post:', error);
